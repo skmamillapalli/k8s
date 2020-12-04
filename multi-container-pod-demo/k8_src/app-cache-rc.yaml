@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: multi-container-app-cache-rc
+  labels:
+    name: multi-container-cache-pod-rc
+    env: dev
+    purpose: learning
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: web-container
+          image:  sunilmamillapalli/k8s-learning:web-cache-db
+          ports:
+            - name: web-app-port
+              containerPort: 5000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "128m"
+            limits:
+              memory: "256Mi"
+              cpu: "256m"
+        - name: redis-container
+          image: redis
+          ports:
+            - name: redis-port
+              containerPort: 6379
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "128m"
+            limits:
+              memory: "256Mi"
+              cpu: "256m"
+    metadata:
+      name: multi-container-app-cache-pod
+      labels:
+        name: multi-container-cache-pod
+        env: dev
+        purpose: learning
