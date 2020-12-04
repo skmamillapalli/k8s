@@ -21,4 +21,5 @@ Blockers
   
   *$ minikube ssh*
   *$ docker rmi <image-id>*
+
 ![architecture diagram](./UserMgmt.png)
