@@ -1,22 +1,22 @@
-Application:
+Application
 ===============
--> A simple web app that displays access count, count maintained in redis cache,
--> Comprises two micro services, app and redis service.
--> Service Discovery happens with kuberentes DNS, web service can access redis via service name.
+- A simple web app that displays access count, count maintained in redis cache,
+- Comprises two micro services, app and redis service.
+- Service Discovery happens with kuberentes DNS, web service can access redis via service name.
 
-Deployment:
--> Deployed on minikube(single node cluster) with hyperkit(hypervisor/xhyve) driver.
--> Cluster has one node which acts as master and worker node.
+## Deployment
+- Deployed on minikube(single node cluster) with hyperkit(hypervisor/xhyve) driver.
+- Cluster has one node which acts as master and worker node.
 
-Observations:
+Observations
 ================
 Networking
 ---------------
--> container process running as pods can access host ports, host serices via host ip.
--> Without creating service, to test process on a pod, get into pod and do a curl to localhost
+- container process running as pods can access host ports, host serices via host ip.
+- Without creating service, to test process on a pod, get into pod and do a curl to localhost
     ex: kubectl exec web-app -it /bin/bash
         curl localhost:5000/ping
--> A NodePort service also creates a clusterIP service by default. NodePort is used for external access and
+- A NodePort service also creates a clusterIP service by default. NodePort is used for external access and
    clusterIP is used for access withing cluster. So there are three ways to access a service
 
     1) Within pod, if its service running on pod, localhost:containerPort.
@@ -39,8 +39,8 @@ Networking
                                                                                                             
 Labels and Selectors
 ----------------------
--> Labels and their counterpart selectors are absolutely crucial to map pod(s) to a service.
--> service selector looks for matching labels and only with perfect match, pods are abstraced
+- Labels and their counterpart selectors are absolutely crucial to map pod(s) to a service.
+- service selector looks for matching labels and only with perfect match, pods are abstraced
    under service.
    Ex: 
     metadata:
@@ -55,16 +55,16 @@ Labels and Selectors
             name3: value2
             name3: value3
 
--> Always check container status after pod creation, pod creation is fast but container might not be
+- Always check container status after pod creation, pod creation is fast but container might not be
    up always.
 
 Secret Management
 -------------------
--> For pulling images from a  private repository hosted by any registry, k8s provides a way to supply
+- For pulling images from a  private repository hosted by any registry, k8s provides a way to supply
    creds without supplying actual uname/pwd for example.
    > kubectl create secret docker-registry regcred --docker-server=<your-registry-server> \
     --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
--> This secret can be referred by supplying secret name in pod/rc template.
+- This secret can be referred by supplying secret name in pod/rc template.
     spec:
         containers:
             - name: private-reg-container
@@ -75,9 +75,9 @@ More info at: https://kubernetes.io/docs/tasks/configure-pod-container/pull-imag
 
 Resource requests and limits
 -----------------------------
--> To prevent starvation of other processes resource(cpu/memory) request can be supplied in tempalte.
--> This also helps scheduler to schedule a pod on right node.
--> limits sets hard limit for resource usage thus avoiding starvation scenario.
--> vcpu is expressed as decimal or number format.
+- To prevent starvation of other processes resource(cpu/memory) request can be supplied in tempalte.
+- This also helps scheduler to schedule a pod on right node.
+- limits sets hard limit for resource usage thus avoiding starvation scenario.
+- vcpu is expressed as decimal or number format.
    The expression 0.1 is equivalent to the expression 100m, which can be read as "one hundred millicpu".
    https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
