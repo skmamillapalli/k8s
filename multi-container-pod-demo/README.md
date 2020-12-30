@@ -2,10 +2,10 @@
 
 ------------------------------
 Deploys a simple blog post app with multi-container pod with app+cache containers.
-A DB pod serves as data store
-App written in python, basic blog post that sets and gets values.
+A DB pod serves as data store.
+App is written in python and is a basic blog post that sets and gets values.
 Values are served from cache when request reaches a pod, cache contents expires after 10s.
-RC ensures replicas of pods work together to server a Service.
+RC ensures replicas of pods work together to serve a Service.
 
 Connections
 -----------
