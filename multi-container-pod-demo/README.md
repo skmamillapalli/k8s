@@ -23,3 +23,8 @@ Blockers
   *$ docker rmi <image-id>*
 
 ![architecture diagram](./UserMgmt.png)
+
+Vault Support
+---------------
+- Secrets for db are held with vault and are retrieved via a sidecar container transparent to application
+- Ref. instructions at https://learn.hashicorp.com/tutorials/vault/kubernetes-sidecar?in=vault/kubernetes#agent-inject-template-filepath

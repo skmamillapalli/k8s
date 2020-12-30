@@ -7,12 +7,15 @@ metadata:
     env: dev
     purpose: learning
 spec:
-  replicas: 2
+  replicas: 1
   template:
     spec:
+      serviceAccountName: internal-app
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: web-container
-          image:  sunilmamillapalli/k8s-learning:web-cache-db
+          image:  sunilmamillapalli/k8s-learning:web-cache-vault-support
           ports:
             - name: web-app-port
               containerPort: 5000
@@ -41,3 +44,15 @@ spec:
         name: multi-container-cache-pod
         env: dev
         purpose: learning
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/role: "internal-app"
+        vault.hashicorp.com/agent-inject-secret-database-config.json: "internal/data/database/config"
+        vault.hashicorp.com/agent-inject-template-database-config.json: |
+          {
+          {{- with secret "internal/data/database/config" -}}
+          "username": "{{ .Data.data.username }}",
+          "password": "{{ .Data.data.password }}"
+          {{- end -}}
+          }

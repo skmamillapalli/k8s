@@ -1,6 +1,7 @@
 import redis
 import pymysql
 from flask import Flask, request
+import json
 
 DEBUG=True
 app=Flask(__name__)
@@ -10,9 +11,12 @@ app.config.from_object(__name__)
 
 class MysqlDB:
     def __init__(self):
+        # Get DB creds from vault via sidecar container
+        with open('/vault/secrets/database-config.json', 'r') as file_obj:
+            creds = json.loads(file_obj.read())
         self.conn=pymysql.connect(host='mysql',
-                user='root', 
-                password='password', 
+                user=creds['username'], 
+                password=creds['password'], 
                 charset='utf8mb4',
                 port=3306,
                 db='blog')
