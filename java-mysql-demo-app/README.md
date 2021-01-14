@@ -9,6 +9,7 @@
 5) Test the app, which is basically a set/get service.
 6) Run cleanup.sh to remove pods and service.
 
+<h3>Tests</h3>
 * To add an entry to database via Java App,  
   ```curl {NODEIP:NODEPORT}/secrets-demo/add-user -d name=First -d email=someemail@email.com```.  
 Entry Saved!
