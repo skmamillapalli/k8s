@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: java-mysql-vaullt-demo-rc
+  labels:
+    name: java-mysql-vaullt-demo-rc
+    env: dev
+    purpose: demo
+spec:
+  replicas: 1
+  template:
+    spec:
+      serviceAccountName: internal-app
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: web-container
+          image: sunilmamillapalli/k8s-learning:java-app-vault-demo
+          ports:
+            - name: web-app-port
+              containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "128m"
+            limits:
+              memory: "256Mi"
+              cpu: "256m"
+    metadata:
+      name: java-mysql-vaullt-demo-pod
+      labels:
+        name: java-mysql-vaullt-demo-pod
+        env: dev
+        purpose: demo
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/role: "internal-app"
+        vault.hashicorp.com/agent-inject-secret-application.properties: "internal/data/database/config"
+        vault.hashicorp.com/agent-inject-template-application.properties: |
+          {{- with secret "internal/data/database/config" -}}
+          server.address=0.0.0.0
+          spring.jpa.hibernate.ddl-auto=update
+          spring.datasource.url=jdbc:mysql://${MYSQL_SERVICE_HOST:localhost}:3306/db_example
+          spring.datasource.username={{ .Data.data.username }}
+          spring.datasource.password={{ .Data.data.password }}
+          spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+          {{- end -}}
